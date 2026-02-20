@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Valentine's Sliding Puzzle ❤️</title>
+<title>Valentine's 3x3 Puzzle ❤️</title>
 <style>
   body {
     font-family: sans-serif;
@@ -21,14 +21,14 @@
   }
   #puzzle {
     display: grid;
-    grid-template-columns: repeat(4, 150px);
-    grid-template-rows: repeat(4, 112.5px); /* keep 4:3 ratio */
+    grid-template-columns: repeat(3, 200px);
+    grid-template-rows: repeat(3, 150px); /* keep 4:3 ratio */
     gap: 2px;
     margin-top: 20px;
   }
   .piece {
-    width: 150px;
-    height: 112.5px;
+    width: 200px;
+    height: 150px;
     background-image: url('photo.png'); /* replace with your photo */
     background-size: 600px 450px;
     border: 2px solid #d62869;
@@ -37,8 +37,6 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 2em;
-    color: white;
     user-select: none;
   }
   .empty {
@@ -56,13 +54,13 @@
 </head>
 <body>
 
-<h1>💖 Sliding Puzzle: Put Us Together 💖</h1>
+<h1>Piece by Piece, We Complete Each Other</h1>
 <div id="puzzle"></div>
-<div id="message">You unlocked my heart! ❤️</div>
+<div id="message">Some super secret clue!</div>
 
 <script>
-const rows = 4;
-const cols = 4;
+const rows = 3;
+const cols = 3;
 const puzzle = document.getElementById('puzzle');
 const message = document.getElementById('message');
 
@@ -83,7 +81,7 @@ function render() {
             piece.classList.add('piece', 'empty');
         } else {
             piece.classList.add('piece');
-            piece.style.backgroundPosition = `-${(grid[i] % cols) * 150}px -${Math.floor(grid[i] / cols) * 112.5}px`;
+            piece.style.backgroundPosition = `-${(grid[i] % cols) * 200}px -${Math.floor(grid[i] / cols) * 150}px`;
         }
         piece.dataset.index = i;
         piece.addEventListener('click', () => movePiece(i));
@@ -108,9 +106,8 @@ function isSolvable(arr) {
             if (nums[i] > nums[j]) inversions++;
         }
     }
-    const emptyRow = Math.floor(arr.indexOf(null) / cols) + 1;
-    if (cols % 2 === 1) return inversions % 2 === 0;
-    else return (inversions + emptyRow) % 2 === 0;
+    // 3x3 grid: solvable if inversions even
+    return inversions % 2 === 0;
 }
 
 // Move piece if adjacent to empty
