@@ -5,48 +5,64 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Valentine's 3x3 Puzzle ❤️</title>
 <style>
+  /* === Page Styling === */
   body {
-    font-family: sans-serif;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background: #ffe6f0;
+    background: #FFF4E1; /* soft cream */
     height: 100vh;
     margin: 0;
   }
+
   h1 {
-    color: #d62869;
+    color: #6A2C2C; /* deep red/brown */
     text-align: center;
+    margin-bottom: 20px;
   }
+
+  /* === Puzzle Grid === */
   #puzzle {
     display: grid;
     grid-template-columns: repeat(3, 200px);
-    grid-template-rows: repeat(3, 150px); /* keep 4:3 ratio */
+    grid-template-rows: repeat(3, 150px); /* 4:3 aspect ratio */
     gap: 2px;
-    margin-top: 20px;
   }
+
+  /* === Puzzle Pieces === */
   .piece {
     width: 200px;
     height: 150px;
     background-image: url('photo.png'); /* replace with your photo */
-    background-size: 600px 450px;
-    border: 2px solid #d62869;
+    background-size: 600px 450px; /* scaled display */
+    border: 2px solid #B33A3A; /* deep red */
     box-sizing: border-box;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
     user-select: none;
+    transition: transform 0.2s ease; /* subtle hover effect */
   }
+
+  .piece:hover {
+    transform: scale(1.05);
+    border-color: #E07A5F; /* warm coral hover */
+  }
+
+  /* === Empty Slot === */
   .empty {
     background: none;
-    border: 2px dashed #d62869;
+    border: 2px dashed #D9A066; /* warm gold */
   }
+
+  /* === Message === */
   #message {
     margin-top: 20px;
     font-size: 1.5em;
-    color: #d62869;
+    color: #B33A3A; /* matches piece border */
     display: none;
     text-align: center;
   }
@@ -54,9 +70,9 @@
 </head>
 <body>
 
-<h1>Piece by Piece, We Complete Each Other</h1>
+<h1>You're the Missing Piece</h1>
 <div id="puzzle"></div>
-<div id="message">Some super secret clue!</div>
+<div id="message">Super secret clue</div>
 
 <script>
 const rows = 3;
@@ -69,10 +85,10 @@ let grid = [];
 for (let i = 0; i < rows * cols - 1; i++) {
     grid.push(i);
 }
-grid.push(null); // empty space
+grid.push(null); // empty slot
 shuffleGrid();
 
-// Render pieces
+// Render puzzle
 function render() {
     puzzle.innerHTML = '';
     for (let i = 0; i < rows * cols; i++) {
@@ -89,7 +105,7 @@ function render() {
     }
 }
 
-// Shuffle the grid (simple, solvable)
+// Shuffle the grid (solvable)
 function shuffleGrid() {
     do {
         grid = grid.filter(v => v !== null).sort(() => Math.random() - 0.5);
@@ -106,7 +122,6 @@ function isSolvable(arr) {
             if (nums[i] > nums[j]) inversions++;
         }
     }
-    // 3x3 grid: solvable if inversions even
     return inversions % 2 === 0;
 }
 
