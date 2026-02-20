@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Valentine's Sliding Puzzle ❤️</title>
+<style>
+  body {
+    font-family: sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: #ffe6f0;
+    height: 100vh;
+    margin: 0;
+  }
+  h1 {
+    color: #d62869;
+    text-align: center;
+  }
+  #puzzle {
+    display: grid;
+    grid-template-columns: repeat(4, 150px);
+    grid-template-rows: repeat(4, 112.5px); /* keep 4:3 ratio */
+    gap: 2px;
+    margin-top: 20px;
+  }
+  .piece {
+    width: 150px;
+    height: 112.5px;
+    background-image: url('photo.png'); /* replace with your photo */
+    background-size: 600px 450px;
+    border: 2px solid #d62869;
+    box-sizing: border-box;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2em;
+    color: white;
+    user-select: none;
+  }
+  .empty {
+    background: none;
+    border: 2px dashed #d62869;
+  }
+  #message {
+    margin-top: 20px;
+    font-size: 1.5em;
+    color: #d62869;
+    display: none;
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+
+<h1>💖 Sliding Puzzle: Put Us Together 💖</h1>
+<div id="puzzle"></div>
+<div id="message">You unlocked my heart! ❤️</div>
+
+<script>
+const rows = 4;
+const cols = 4;
+const puzzle = document.getElementById('puzzle');
+const message = document.getElementById('message');
+
+// Initialize grid
+let grid = [];
+for (let i = 0; i < rows * cols - 1; i++) {
+    grid.push(i);
+}
+grid.push(null); // empty space
+shuffleGrid();
+
+// Render pieces
+function render() {
+    puzzle.innerHTML = '';
+    for (let i = 0; i < rows * cols; i++) {
+        const piece = document.createElement('div');
+        if (grid[i] === null) {
+            piece.classList.add('piece', 'empty');
+        } else {
+            piece.classList.add('piece');
+            piece.style.backgroundPosition = `-${(grid[i] % cols) * 150}px -${Math.floor(grid[i] / cols) * 112.5}px`;
+        }
+        piece.dataset.index = i;
+        piece.addEventListener('click', () => movePiece(i));
+        puzzle.appendChild(piece);
+    }
+}
+
+// Shuffle the grid (simple, solvable)
+function shuffleGrid() {
+    do {
+        grid = grid.filter(v => v !== null).sort(() => Math.random() - 0.5);
+        grid.push(null);
+    } while (!isSolvable(grid));
+}
+
+// Check solvability
+function isSolvable(arr) {
+    let inversions = 0;
+    const nums = arr.filter(n => n !== null);
+    for (let i = 0; i < nums.length - 1; i++) {
+        for (let j = i + 1; j < nums.length; j++) {
+            if (nums[i] > nums[j]) inversions++;
+        }
+    }
+    const emptyRow = Math.floor(arr.indexOf(null) / cols) + 1;
+    if (cols % 2 === 1) return inversions % 2 === 0;
+    else return (inversions + emptyRow) % 2 === 0;
+}
+
+// Move piece if adjacent to empty
+function movePiece(index) {
+    const emptyIndex = grid.indexOf(null);
+    const [row1, col1] = [Math.floor(index / cols), index % cols];
+    const [row2, col2] = [Math.floor(emptyIndex / cols), emptyIndex % cols];
+    const isAdjacent = (row1 === row2 && Math.abs(col1 - col2) === 1) ||
+                       (col1 === col2 && Math.abs(row1 - row2) === 1);
+    if (isAdjacent) {
+        [grid[index], grid[emptyIndex]] = [grid[emptyIndex], grid[index]];
+        render();
+        checkComplete();
+    }
+}
+
+// Check if puzzle is solved
+function checkComplete() {
+    for (let i = 0; i < rows * cols - 1; i++) {
+        if (grid[i] !== i) return;
+    }
+    message.style.display = 'block';
+}
+
+render();
+</script>
+
+</body>
+</html>
